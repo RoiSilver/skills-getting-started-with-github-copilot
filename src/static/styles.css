@@ -158,13 +158,16 @@ footer {
 }
 
 .participants-list {
-  list-style: disc;
-  margin-left: 18px;
-  padding-left: 6px;
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
   display: block;
 }
 
 .participants-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 6px 8px;
   margin-bottom: 6px;
   background: #f1f5ff;
@@ -172,6 +175,24 @@ footer {
   font-size: 14px;
   color: #243b7a;
   border: 1px solid rgba(34, 54, 120, 0.06);
+}
+
+.delete-participant {
+  background-color: transparent;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+  padding: 4px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.delete-participant:hover {
+  background-color: #ffebee;
+  color: #b71c1c;
 }
 
 /* small info style used for "No participants yet." */

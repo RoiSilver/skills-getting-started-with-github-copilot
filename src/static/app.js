@@ -61,7 +61,32 @@ document.addEventListener("DOMContentLoaded", () => {
         ul.className = "participants-list";
         info.participants.forEach((email) => {
           const li = document.createElement("li");
-          li.textContent = email;
+          
+          const span = document.createElement("span");
+          span.textContent = email;
+          li.appendChild(span);
+          
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "delete-participant";
+          deleteBtn.textContent = "×";
+          deleteBtn.title = `Remove ${email} from ${name}`;
+          deleteBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+              const res = await fetch(`/activities/${encodeURIComponent(name)}/unregister?email=${encodeURIComponent(email)}`, { method: "POST" });
+              if (res.ok) {
+                showMessage(`${email} removed from ${name}`, "success");
+                await fetchAndRender();
+              } else {
+                const err = await res.json().catch(() => ({}));
+                showMessage(err.detail || "Failed to remove participant.", "error");
+              }
+            } catch (err) {
+              showMessage(err.message || "Network error.", "error");
+            }
+          });
+          li.appendChild(deleteBtn);
+          
           ul.appendChild(li);
         });
         participantsWrap.appendChild(ul);
@@ -91,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    clearMessage();
     const email = document.getElementById("email").value.trim();
     const activity = activitySelect.value;
     if (!email || !activity) {
@@ -105,8 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (res.ok) {
         const body = await res.json();
         showMessage(body.message || "Signed up successfully!", "success");
-        await fetchAndRender();
         signupForm.reset();
+        await fetchAndRender();
       } else {
         const err = await res.json().catch(() => ({}));
         showMessage(err.detail || "Signup failed.", "error");
